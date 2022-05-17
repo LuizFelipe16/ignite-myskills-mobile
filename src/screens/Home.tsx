@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, FlatList, StatusBar } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  FlatList,
+  StatusBar,
+  Alert,
+} from 'react-native';
 import generateId from 'react-native-uuid';
 
 import { Button, Text, SkillCard } from '../components';
 import { Skill } from '../types';
 import { onMount, theme, Theme } from '../_app';
-
-// NOTE FlatList para lidar com lista, pois scroll view carrega tudo, 10 elementos, até o que não visualizamos
-// enquanto o flat só aquilo que visualizamos e o resto carrega aos poucos, ganho performance
-
-// NOTE useState traz impacto de re-render para a aplicação, além de armazenar um estado
-
-// NOTE handle -> convenção, função dsparada por uma ação do usuário
 
 export function Home() {
   const [newSkill, setNewSkill] = useState('');
@@ -38,8 +38,14 @@ export function Home() {
       created_at: new Date(),
     };
 
-    setMySkills(oldSkills => [...oldSkills, data]);
-    setNewSkill('');
+    if (newSkill) {
+      setMySkills(oldSkills => [...oldSkills, data]);
+      setNewSkill('');
+    } else {
+      Alert.alert('Oops', 'Please fill in the field correctly.', [
+        { text: 'OK', style: 'default' },
+      ]);
+    }
 
     return data;
   };
@@ -63,6 +69,7 @@ export function Home() {
           style={componentStyles.input}
           placeholder="New skill"
           placeholderTextColor={theme.colors.input.placeholder}
+          value={newSkill}
           onChangeText={setNewSkill}
         />
 
